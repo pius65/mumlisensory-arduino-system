@@ -1,0 +1,40 @@
+
+multisensory security system
+
+
+const int soundSensorPin = A0; // Sound sensor's analog output
+const int motionSensorPin = 5; // Motion sensor's output pin
+const int ledPin = 13; // Built-in LED pin
+const int buzzerPin = 12; // Buzzer pin
+const int soundThreshold = 400; // Sound threshold for triggering
+
+void setup() {
+  pinMode(ledPin, OUTPUT);
+  pinMode(soundSensorPin, INPUT);
+  pinMode(motionSensorPin, INPUT);
+  pinMode(buzzerPin, OUTPUT); // Set the buzzer pin as an output
+  Serial.begin(9600);
+}
+
+void beep(int note, int duration) {
+  // This function generates a tone for a given duration
+  tone(buzzerPin, note, duration);
+  delay(duration);
+  noTone(buzzerPin);
+}
+
+void loop() {
+  int soundLevel = analogRead(soundSensorPin);
+  int motionDetected = digitalRead(motionSensorPin);
+
+  if (soundLevel > soundThreshold || motionDetected == HIGH) {
+    digitalWrite(ledPin, HIGH); // Turn on LED
+    beep(1000, 200); // Emit a beep when triggered
+    Serial.println("Alert: Sound or Motion Detected!");
+  } else {
+    digitalWrite(ledPin, LOW);
+  }
+  // Short delay to reduce sensitivity and avoid continuous triggers
+  delay(100);
+}
+
